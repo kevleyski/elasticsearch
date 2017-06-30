@@ -45,8 +45,8 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.util.BigArrays;
 import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.indices.breaker.CircuitBreakerService;
-import org.elasticsearch.node.Node;
 import org.elasticsearch.node.InternalSettingsPreparer;
+import org.elasticsearch.node.Node;
 import org.elasticsearch.plugins.ActionPlugin;
 import org.elasticsearch.plugins.NetworkPlugin;
 import org.elasticsearch.plugins.Plugin;
@@ -97,7 +97,7 @@ public abstract class TransportClient extends AbstractClient {
                 .put(InternalSettingsPreparer.prepareSettings(settings))
                 .put(NetworkService.NETWORK_SERVER.getKey(), false)
                 .put(CLIENT_TYPE_SETTING_S.getKey(), CLIENT_TYPE);
-        return new PluginsService(settingsBuilder.build(), null, null, plugins);
+        return new PluginsService(settingsBuilder.build(), null, null, null, plugins);
     }
 
     protected static Collection<Class<? extends Plugin>> addPlugins(Collection<Class<? extends Plugin>> collection,
@@ -159,7 +159,7 @@ public abstract class TransportClient extends AbstractClient {
             modules.add(b -> b.bind(ThreadPool.class).toInstance(threadPool));
             ActionModule actionModule = new ActionModule(true, settings, null, settingsModule.getIndexScopedSettings(),
                     settingsModule.getClusterSettings(), settingsModule.getSettingsFilter(), threadPool,
-                    pluginsService.filterPlugins(ActionPlugin.class), null, null);
+                    pluginsService.filterPlugins(ActionPlugin.class), null, null, null);
             modules.add(actionModule);
 
             CircuitBreakerService circuitBreakerService = Node.createCircuitBreakerService(settingsModule.getSettings(),
